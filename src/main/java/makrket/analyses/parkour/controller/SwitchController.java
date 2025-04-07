@@ -23,7 +23,7 @@ public class SwitchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Switch> getSwitchById(@PathVariable Integer id) {
+    public ResponseEntity<Switch> getSwitchById(@PathVariable Long id) {
         return switchRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -35,7 +35,7 @@ public class SwitchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Switch> updateSwitch(@PathVariable Integer id, @RequestBody Switch switchDetails) {
+    public ResponseEntity<Switch> updateSwitch(@PathVariable Long id, @RequestBody Switch switchDetails) {
         return switchRepository.findById(id).map(switchEntity -> {
             switchEntity.setTitle(switchDetails.getTitle());
             switchEntity.setPrice(switchDetails.getPrice());
@@ -49,7 +49,7 @@ public class SwitchController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSwitch(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteSwitch(@PathVariable Long id) {
         if (!switchRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -58,7 +58,7 @@ public class SwitchController {
     }
 
     @GetMapping("/company/{companyId}")
-    public ResponseEntity<List<Switch>> getSwitchesByCompanyId(@PathVariable Integer companyId) {
+    public ResponseEntity<List<Switch>> getSwitchesByCompanyId(@PathVariable Long companyId) {
         List<Switch> switches = switchRepository.findByCompanyId(companyId);
         if (switches.isEmpty()) {
             return ResponseEntity.notFound().build();

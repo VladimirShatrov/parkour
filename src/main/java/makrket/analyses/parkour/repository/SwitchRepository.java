@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SwitchRepository extends JpaRepository<Switch, Integer> {
-    List<Switch> findByCompanyId(Integer companyId);
+public interface SwitchRepository extends JpaRepository<Switch, Long> {
+    List<Switch> findByCompanyId(Long companyId);
 }
