@@ -1,4 +1,4 @@
-package makrket.analyses.parkour;
+package market.analyses.parkour;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

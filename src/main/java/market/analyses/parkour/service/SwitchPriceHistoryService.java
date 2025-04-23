@@ -1,7 +1,7 @@
-package makrket.analyses.parkour.service;
+package market.analyses.parkour.service;
 
-import makrket.analyses.parkour.entity.SwitchPriceHistory;
-import makrket.analyses.parkour.repository.SwitchPriceHistoryRepository;
+import market.analyses.parkour.entity.SwitchPriceHistory;
+import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

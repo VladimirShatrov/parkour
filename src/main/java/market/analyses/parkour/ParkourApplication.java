@@ -1,4 +1,4 @@
-package makrket.analyses.parkour;
+package market.analyses.parkour;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

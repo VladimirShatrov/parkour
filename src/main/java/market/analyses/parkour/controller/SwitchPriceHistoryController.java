@@ -1,7 +1,7 @@
-package makrket.analyses.parkour.controller;
+package market.analyses.parkour.controller;
 
-import makrket.analyses.parkour.entity.SwitchPriceHistory;
-import makrket.analyses.parkour.repository.SwitchPriceHistoryRepository;
+import market.analyses.parkour.entity.SwitchPriceHistory;
+import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

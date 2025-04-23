@@ -1,7 +1,7 @@
-package makrket.analyses.parkour.service;
+package market.analyses.parkour.service;
 
-import makrket.analyses.parkour.entity.Company;
-import makrket.analyses.parkour.repository.CompanyRepository;
+import market.analyses.parkour.entity.Company;
+import market.analyses.parkour.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

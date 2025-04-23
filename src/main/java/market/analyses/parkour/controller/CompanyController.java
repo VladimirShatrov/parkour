@@ -1,7 +1,7 @@
-package makrket.analyses.parkour.controller;
+package market.analyses.parkour.controller;
 
-import makrket.analyses.parkour.entity.Company;
-import makrket.analyses.parkour.repository.CompanyRepository;
+import market.analyses.parkour.entity.Company;
+import market.analyses.parkour.repository.CompanyRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

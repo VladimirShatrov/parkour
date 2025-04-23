@@ -1,7 +1,7 @@
-package makrket.analyses.parkour.service;
+package market.analyses.parkour.service;
 
-import makrket.analyses.parkour.entity.Switch;
-import makrket.analyses.parkour.repository.SwitchRepository;
+import market.analyses.parkour.entity.Switch;
+import market.analyses.parkour.repository.SwitchRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -27,6 +27,14 @@ public class SwitchService {
 
     public void deleteSwitch(Long id) {
         switchRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return switchRepository.existsById(id);
+    }
+
+    public List<Switch> getSwitchesByCompany(Long id) {
+        return switchRepository.findByCompanyId(id);
     }
 }
 

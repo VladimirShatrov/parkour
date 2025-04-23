@@ -1,12 +1,16 @@
-package makrket.analyses.parkour.entity;
+package market.analyses.parkour.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "switches")
 public class Switch {
 
@@ -35,5 +39,8 @@ public class Switch {
 
     @Column(name = "controllable", nullable = false)
     private Boolean controllable;
+
+    @Column(name = "is_there_a_switch", nullable = false)
+    private Boolean available;
 }
 

@@ -1,6 +1,6 @@
-package makrket.analyses.parkour.repository;
+package market.analyses.parkour.repository;
 
-import makrket.analyses.parkour.entity.Company;
+import market.analyses.parkour.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
