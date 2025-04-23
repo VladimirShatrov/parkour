@@ -2,56 +2,66 @@ package market.analyses.parkour.controller;
 
 import market.analyses.parkour.entity.SwitchPriceHistory;
 import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
+import market.analyses.parkour.service.SwitchPriceHistoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/switch-price-history")
 public class SwitchPriceHistoryController {
 
-    private final SwitchPriceHistoryRepository historyRepository;
+    private final SwitchPriceHistoryService historyService;
 
-    public SwitchPriceHistoryController(SwitchPriceHistoryRepository historyRepository) {
-        this.historyRepository = historyRepository;
+    public SwitchPriceHistoryController(SwitchPriceHistoryService historyService) {
+        this.historyService = historyService;
     }
 
     @GetMapping
     public ResponseEntity<List<SwitchPriceHistory>> getAllHistory() {
-        return ResponseEntity.ok(historyRepository.findAll());
+        return ResponseEntity.ok(historyService.getAllPriceChanges());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SwitchPriceHistory> getHistoryById(@PathVariable Long id) {
-        Optional<SwitchPriceHistory> history = historyRepository.findById(id);
-        return history.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        SwitchPriceHistory history = historyService.getHistoryById(id);
+        if (history != null) {
+            return ResponseEntity.ok(history);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     public ResponseEntity<SwitchPriceHistory> createHistory(@RequestBody SwitchPriceHistory history) {
-        SwitchPriceHistory savedHistory = historyRepository.save(history);
+        SwitchPriceHistory savedHistory = historyService.savePriceChange(history);
         return ResponseEntity.ok(savedHistory);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SwitchPriceHistory> updateHistory(@PathVariable Long id, @RequestBody SwitchPriceHistory historyDetails) {
-        return historyRepository.findById(id).map(history -> {
+        try {
+            SwitchPriceHistory history = historyService.getHistoryById(id);
+
+            history.setSwitchEntity(historyDetails.getSwitchEntity());
             history.setNewPrice(historyDetails.getNewPrice());
             history.setChangeDate(historyDetails.getChangeDate());
-            history.setSwitchEntity(historyDetails.getSwitchEntity());
-            return ResponseEntity.ok(historyRepository.save(history));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+
+            return ResponseEntity.ok(historyService.savePriceChange(history));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHistory(@PathVariable Long id) {
-        if (!historyRepository.existsById(id)) {
+        if (!historyService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        historyRepository.deleteById(id);
+        historyService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

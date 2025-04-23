@@ -28,4 +28,8 @@ public class CompanyService {
     public void deleteCompany(Long id) {
         companyRepository.deleteById(id);
     }
+
+    public boolean existsById(Long id) {
+        return companyRepository.existsById(id);
+    }
 }
