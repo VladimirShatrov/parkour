@@ -22,4 +22,20 @@ services:
       - "3000:3000"
     depends_on:
       - tempo
+    volumes:
+      - ./data/grafana:/var/lib/grafana
 
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:latest
+    container_name: victoria-metrics
+    ports:
+      - "8428:8428"
+    volumes:
+      - ./src/main/java/market/analyses/parkour/config/victoria-metrics/promscrape.yaml:/etc/promscrape.yaml
+    command: ["-promscrape.config", "/etc/promscrape.yaml"]
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
