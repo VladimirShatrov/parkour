@@ -1,12 +1,13 @@
 package market.analyses.parkour.controller;
 
 import market.analyses.parkour.entity.Switch;
-import market.analyses.parkour.repository.SwitchRepository;
 import market.analyses.parkour.service.SwitchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/switches")
@@ -29,19 +30,27 @@ public class SwitchController {
         if (s == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok().body(s);
+            return ResponseEntity.ok(s);
         }
     }
 
     @PostMapping
-    public ResponseEntity<Switch> createSwitch(@RequestBody Switch switchEntity) {
-        return ResponseEntity.ok(switchService.saveSwitch(switchEntity));
+    public ResponseEntity<Switch> createSwitch(@RequestBody Switch switchEntity,
+                                               UriComponentsBuilder uriComponentsBuilder) {
+        Switch newSwitch = switchService.saveSwitch(switchEntity);
+        int id = newSwitch.getId();
+        return ResponseEntity.created(uriComponentsBuilder
+                    .path("switches/{id}")
+                    .build(Map.of("id", id)))
+                .body(newSwitch);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Switch> updateSwitch(@PathVariable Long id, @RequestBody Switch switchDetails) {
         Switch s = switchService.getSwitchById(id);
-
+        if (s == null) {
+            return ResponseEntity.notFound().build();
+        }
         s.setControllable(switchDetails.getControllable());
         s.setCompany(switchDetails.getCompany());
         s.setPrice(switchDetails.getPrice());
