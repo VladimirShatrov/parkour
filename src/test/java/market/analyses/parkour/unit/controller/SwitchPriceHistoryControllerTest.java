@@ -1,5 +1,6 @@
-package market.analyses.parkour.controller;
+package market.analyses.parkour.unit.controller;
 
+import market.analyses.parkour.controller.SwitchPriceHistoryController;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.Company;
 import market.analyses.parkour.entity.SwitchPriceHistory;
