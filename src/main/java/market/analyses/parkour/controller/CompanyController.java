@@ -5,8 +5,10 @@ import market.analyses.parkour.repository.CompanyRepository;
 import market.analyses.parkour.service.CompanyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -36,9 +38,17 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<Company> createCompany(@RequestBody Company company) {
-        Company savedCompany = companyService.saveCompany(company);
-        return ResponseEntity.ok(savedCompany);
+    public ResponseEntity<?> createCompany(@RequestBody Company company,
+                                                 UriComponentsBuilder uriComponentsBuilder) {
+        if (company.getId() != null && companyService.existsById(company.getId().longValue())) {
+            return ResponseEntity.badRequest().body("Компания с id: " + company.getId() + " уже существует.");
+        }
+        Company newCompany = companyService.saveCompany(company);
+        int id = newCompany.getId();
+        return ResponseEntity.created(uriComponentsBuilder
+                    .path("companies/{id}")
+                    .build(Map.of("id", id)))
+                .body(newCompany);
     }
 
     @PutMapping("/{id}")

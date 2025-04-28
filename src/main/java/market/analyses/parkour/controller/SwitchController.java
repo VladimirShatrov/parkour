@@ -1,6 +1,7 @@
 package market.analyses.parkour.controller;
 
 import market.analyses.parkour.entity.Switch;
+import market.analyses.parkour.service.CompanyService;
 import market.analyses.parkour.service.SwitchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,11 @@ public class SwitchController {
 
     private final SwitchService switchService;
 
-    public SwitchController(SwitchService switchService) {
+    private final CompanyService companyService;
+
+    public SwitchController(SwitchService switchService, CompanyService companyService) {
         this.switchService = switchService;
+        this.companyService = companyService;
     }
 
     @GetMapping
@@ -35,8 +39,11 @@ public class SwitchController {
     }
 
     @PostMapping
-    public ResponseEntity<Switch> createSwitch(@RequestBody Switch switchEntity,
+    public ResponseEntity<?> createSwitch(@RequestBody Switch switchEntity,
                                                UriComponentsBuilder uriComponentsBuilder) {
+        if (switchEntity.getId() != null && switchService.existsById(switchEntity.getId().longValue())) {
+            return ResponseEntity.badRequest().body("Коммутатор с id: " + switchEntity.getId() + " уже существует.");
+        }
         Switch newSwitch = switchService.saveSwitch(switchEntity);
         int id = newSwitch.getId();
         return ResponseEntity.created(uriComponentsBuilder
@@ -58,6 +65,7 @@ public class SwitchController {
         s.setTitle(switchDetails.getTitle());
         s.setUps(switchDetails.getUps());
         s.setSfpPorts(switchDetails.getSfpPorts());
+        s.setAvailable(switchDetails.getAvailable());
 
         switchService.saveSwitch(s);
         return ResponseEntity.ok(s);
@@ -73,7 +81,11 @@ public class SwitchController {
     }
 
     @GetMapping("/company/{companyId}")
-    public ResponseEntity<List<Switch>> getSwitchesByCompanyId(@PathVariable Long companyId) {
+    public ResponseEntity<?> getSwitchesByCompanyId(@PathVariable Long companyId) {
+        if (!companyService.existsById(companyId)) {
+            return ResponseEntity.badRequest().body("Компания с id: " + companyId + " не найдена.");
+        }
+
         List<Switch> switches = switchService.getSwitchesByCompany(companyId);
         if (switches.isEmpty()) {
             return ResponseEntity.notFound().build();

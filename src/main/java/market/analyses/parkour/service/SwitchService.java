@@ -3,6 +3,8 @@ package market.analyses.parkour.service;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.repository.SwitchRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -21,10 +23,12 @@ public class SwitchService {
         return switchRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Switch saveSwitch(Switch networkSwitch) {
         return switchRepository.save(networkSwitch);
     }
 
+    @Transactional
     public void deleteSwitch(Long id) {
         switchRepository.deleteById(id);
     }

@@ -1,8 +1,10 @@
 package market.analyses.parkour.integration.controller;
 
-import market.analyses.parkour.BeansConfiguration;
+import market.analyses.parkour.config.BeansConfiguration;
+import market.analyses.parkour.config.DataBaseTestHelper;
 import market.analyses.parkour.entity.Company;
 import market.analyses.parkour.entity.Switch;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,17 +13,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest(classes = BeansConfiguration.class)
 @AutoConfigureMockMvc
-public class SwitchControllerIt {
+public class SwitchControllerIT {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    DataBaseTestHelper dataBaseTestHelper;
+
+    @BeforeEach
+    void resetDataBase() {
+        dataBaseTestHelper.resetDatabase();
+    }
 
     @Test
     void getAllSwitches_ReturnsValidResponseEntity() throws Exception {
@@ -143,6 +152,124 @@ public class SwitchControllerIt {
                         content().contentType("application/json"),
                         header().string("Location", "http://localhost/switches/5"),
                         content().json(answerJsonPayload)
+                );
+    }
+
+    @Test
+    public void createSwitch_PayloadIsInValid_ReturnsValidStatusCode() throws Exception {
+        Switch payload = new Switch(1, new Company(1, "TFortis"),
+                "NewSwitch", 1000, 12, 0, false, false, false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(payload);
+
+        this.mockMvc.perform(post("/switches")
+                        .contentType("application/json")
+                        .content(jsonPayload))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().string("Коммутатор с id: " + payload.getId() + " уже существует.")
+                );
+    }
+
+    @Test
+    public void updateSwitch_PayloadIsValid_ReturnsValidResponseEntity() throws Exception {
+        Switch payload = new Switch(1, new Company(1, "TFortis"),
+                "NewSwitch", 1000, 12, 0, false, false, false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(payload);
+
+        this.mockMvc.perform(put("/switches/{id}", payload.getId())
+                        .contentType("application/json")
+                        .content(jsonPayload))
+                .andExpectAll(
+                        status().isOk(),
+                        content().json(jsonPayload)
+                );
+    }
+
+    @Test
+    public void updateSwitch_PayloadIsInvalid_ReturnsValidStatusCode() throws Exception {
+        Switch payload = new Switch(5, new Company(1, "TFortis"),
+                "NewSwitch", 1000, 12, 0, false, false, false);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonPayload = objectMapper.writeValueAsString(payload);
+
+        this.mockMvc.perform(put("/switches/{id}", payload.getId())
+                        .contentType("application/json")
+                        .content(jsonPayload))
+                .andExpectAll(
+                        status().isNotFound());
+    }
+
+    @Test
+    public void deleteSwitch_PayloadIsValid_ReturnsValidStatusCode() throws Exception {
+        Long idToDelete = 1L;
+
+        this.mockMvc.perform(delete("/switches/{id}", idToDelete))
+                .andExpectAll(
+                        status().isNoContent()
+                );
+    }
+
+    @Test
+    public void deleteSwitch_PayloadIsInValid_ReturnsValidStatusCode() throws Exception {
+        Long idToDelete = 5L;
+
+        this.mockMvc.perform(delete("/switches/{id}", idToDelete))
+                .andExpectAll(
+                        status().isNotFound()
+                );
+    }
+
+    @Test
+    public void getSwitchesByCompanyId_PayloadIsValid_CompanyHasSwitch_ReturnsValidResponseEntity() throws Exception {
+        Long companyId = 1L;
+
+        this.mockMvc.perform(get("/switches/company/{companyId}", companyId))
+                .andExpectAll(
+                        status().isOk(),
+                        content().json("""
+                            [{
+                                "id": 1,
+                                "company": {
+                                    "id": 1,
+                                    "nameCompany": "TFortis"
+                                },
+                                "title": "Catalyst 9200",
+                                "price": 1200,
+                                "poePorts": 24,
+                                "sfpPorts": 4,
+                                "ups": true,
+                                "controllable": true,
+                                "available": true
+                            }]
+                        """)
+                );
+    }
+
+    @Test
+    public void getSwitchesByCompanyId_PayloadIsInValid_ReturnsValidStatusCode() throws Exception {
+        Long companyId = 5L;
+
+        this.mockMvc.perform(get("/switches/company/{companyId}", companyId))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().string("Компания с id: " + companyId + " не найдена.")
+                );
+    }
+
+    @Test
+    public void getSwitchesByCompanyId_PayloadIsValid_CompanyHasNoSwitch_ReturnsValidResponseEntity() throws Exception {
+        Long companyId = 1L;
+
+        this.mockMvc.perform(delete("/switches/{id}", 1L));
+
+        this.mockMvc.perform(get("/switches/company/{companyId}", companyId))
+                .andExpectAll(
+                        status().isNotFound()
                 );
     }
 }
