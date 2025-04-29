@@ -5,8 +5,10 @@ import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import market.analyses.parkour.service.SwitchPriceHistoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,18 +29,25 @@ public class SwitchPriceHistoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SwitchPriceHistory> getHistoryById(@PathVariable Long id) {
-        SwitchPriceHistory history = historyService.getHistoryById(id);
-        if (history != null) {
+        try {
+            SwitchPriceHistory history = historyService.getHistoryById(id);
             return ResponseEntity.ok(history);
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<SwitchPriceHistory> createHistory(@RequestBody SwitchPriceHistory history) {
-        SwitchPriceHistory savedHistory = historyService.savePriceChange(history);
-        return ResponseEntity.ok(savedHistory);
+    public ResponseEntity<?> createHistory(@RequestBody SwitchPriceHistory history,
+                                                            UriComponentsBuilder uriComponentsBuilder) {
+        if (history.getId() != null && historyService.existsById(history.getId().longValue())) {
+            return ResponseEntity.badRequest().body("Запись об изменении цены с id: " + history.getId() + " уже существует");
+        }
+        SwitchPriceHistory newHistory = historyService.savePriceChange(history);
+        return ResponseEntity.created(uriComponentsBuilder
+                    .path("/switch-price-history/{id}")
+                    .build(Map.of("id", newHistory.getId())))
+                .body(newHistory);
     }
 
     @PutMapping("/{id}")
