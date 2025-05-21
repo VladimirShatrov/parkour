@@ -5,12 +5,12 @@ services:
     image: grafana/tempo:2.4.0
     container_name: tempo
     ports:
-      - "3200:3200"    # Tempo Query frontend (опционально)
-      - "9095:9095"    # gRPC
-      - "4317:4317"    # OTLP/gRPC
-      - "4318:4318"    # OTLP/HTTP
-      - "9411:9411"    # Zipkin
-      - "14268:14268"  # Jaeger
+      - "3200:3200"
+      - "9095:9095"
+      - "4317:4317"
+      - "4318:4318"
+      - "9411:9411"
+      - "14268:14268"
     volumes:
       - ./src/main/java/market/analyses/parkour/config/tempo/tempo.yaml:/etc/tempo.yaml
     command: ["-config.file", "/etc/tempo.yaml"]

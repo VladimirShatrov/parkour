@@ -1,33 +1,55 @@
+stream_over_http_enabled: true
 server:
   http_listen_port: 3200
+  log_level: info
+
+query_frontend:
+  search:
+    duration_slo: 5s
+    throughput_bytes_slo: 1.073741824e+09
+  trace_by_id:
+    duration_slo: 5s
 
 distributor:
   receivers:
+    jaeger:
+      protocols:
+        thrift_http:
+        grpc:
+        thrift_binary:
+        thrift_compact:
+    zipkin:
     otlp:
       protocols:
         http:
         grpc:
-    zipkin:
-      endpoint: 0.0.0.0:9411
+    opencensus:
 
 ingester:
-  lifecycler:
-    ring:
-      kvstore:
-        store: memberlist
-      replication_factor: 1
+  max_block_duration: 5m
+
+compactor:
+  compaction:
+    block_retention: 1h
+
+metrics_generator:
+  registry:
+    external_labels:
+      source: tempo
+      cluster: docker-compose
+  storage:
+    path: /tmp/tempo/generator/wal
+    remote_write:
+      - url: http://victoria-metrics:8428/api/v1/write
+        send_exemplars: true
 
 storage:
   trace:
     backend: local
-    local:
-      path: /var/tempo/traces
     wal:
-      path: /var/tempo/wal
-
-compactor:
-  compaction:
-    block_retention: 48h
+      path: /tmp/tempo/wal
+    local:
+      path: /tmp/tempo/blocks
 
 overrides:
   defaults:
