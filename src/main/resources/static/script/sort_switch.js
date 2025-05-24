@@ -1,4 +1,4 @@
-let sort_switch_price = false;
+let sort_switch_price = true;
 
 function Sort_Switch(button) {
     sort_switch_price = !sort_switch_price;
@@ -10,5 +10,3 @@ function Sort_Switch(button) {
     }
 
 }
-
-
