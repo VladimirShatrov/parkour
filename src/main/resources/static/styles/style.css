@@ -1,19 +1,10 @@
 @font-face {
     font-family: "Inter";
-    /* src: url(/fonts/Inter/Inter-Medium.otf); */
     src: url(/fonts/Inter/Inter-Regular.otf);
 }
 
 :root{
-    /* dark */
-    /* --second-color: #414141;
-    --second-light-color: #252525;
-    --main-color: #2c2c2c;
-    --graphic-size: 85%;
-    --graphic-second-size: 50%;
-    --text-color: #ffffff; */
-    
-    /* light */
+
     --second-color: #091B41;
     --second-light-color: #E6E6E6;
     --main-color: #fcfcfc;
@@ -36,12 +27,9 @@ html, body{
 main {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 98%;
     height: 98%;
 }
-
-
-
 
 header{
     display: flex;
@@ -57,18 +45,11 @@ header{
 }
 
 
-
-/* graphics.css */
-
-
 canvas {
     width: 100% !important;
     height: 100% !important;
     display: block;
 }
-
-
-/* catalog */
 
 
 
@@ -93,3 +74,11 @@ canvas {
     border-radius: 0.4rem;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.create-panel{
+    border: none;
+    font-size: 1.2rem;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0.4rem;
+}
+

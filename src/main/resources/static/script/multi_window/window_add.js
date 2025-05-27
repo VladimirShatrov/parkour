@@ -47,6 +47,8 @@ function new_window(buttonEl, name = "Окно графика") {
                         <button title="Показать выделенное" class="catalog-controller_visual">👁️</button>
                         <button title="Удалить только выделенное" class="catalog-controller_delete">🗑️</button>
                         <button title="Сохранить только выделенное" class="catalog-controller_save">💾</button>
+                        <button title="Динамика цен" class="catalog-controller_price_dynamics">📈</button>
+                        <button title="Первоначальный список" class="catalog-controller_reboot">🔃</button>
                     </div>
                     <button title="Скрыть список" class="catalog-controller_list" value="true">📋</button>
                 </div>

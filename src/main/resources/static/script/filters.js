@@ -1,39 +1,5 @@
 
 
-// function updateFiltersFromButtons() {
-//     // Сброс текущих значений
-//     filters = {
-//         company: [],
-//         ups: [],
-//         managed: [],
-//         PoE: [],
-//         SFP: [],
-//         current: []
-//     };
-
-//     // Все активные кнопки
-//     const activeButtons = document.querySelectorAll('.active');
-
-//     activeButtons.forEach(button => {
-//         const value = button.value;
-
-//         if (button.classList.contains('company-button')) {
-//             filters.company.push(value);
-//         } else if (button.classList.contains('USPNumb-button')) {
-//             filters.ups.push(value === 'true'); // Преобразуем в boolean
-//         } else if (button.classList.contains('managedNumb-button')) {
-//             filters.managed.push(value === 'true');
-//         } else if (button.classList.contains('PoENumb-button')) {
-//             filters.PoE.push(Number(value)); // Преобразуем в число
-//         } else if (button.classList.contains('SFPNumb-button')) {
-//             filters.SFP.push(Number(value));
-//         } else if (button.classList.contains('currentNumb-button')) {
-//             filters.current.push(value === 'true');
-//         }
-//     });
-
-// }
-
 // Функция для фильтрации данных
 function filterSwitches(switches, filters) {
     const filtered = switches.filter(switchItem => {

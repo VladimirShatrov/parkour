@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Analysis of the Switch Market</title>
 
-    <!-- Стили -->
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@9.2.2/dist/gridstack.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="stylesheet" href="/styles/buttons_filter.css">
     <link rel="stylesheet" href="/styles/catalog.css">
@@ -14,27 +14,33 @@
     <link rel="stylesheet" href="/styles/sort.css">
     <link rel="stylesheet" href="/styles/window.css">
     <link rel="stylesheet" href="/styles/company_button.css">
+    <link rel="stylesheet" href="/styles/grid_stack.css">
     <link rel="stylesheet" href="/styles/managed.css">
     <link rel="stylesheet" href="/styles/panel.css">
+    <link rel="stylesheet" href="/styles/phone_style.css">
 
-    <!-- Библиотеки -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </head>
-<body>
 
+
+<body>
 <main>
     <div class="graphic-container">
         <div class="graphics-select">
             <div class="PoE">
                 PoE:
-                <div class="PoE-list" id="poe-buttons"></div>
-            </div>
+                <div class="PoE-list" id="poe-buttons">
 
+                </div>
+            </div>
             <div class="SFP">
                 SFP:
-                <div class="SFP-list" id="SFP-buttons"></div>
+                <div class="SFP-list" id="SFP-buttons">
+                </div>
             </div>
 
             <div class="ups">
@@ -54,16 +60,18 @@
             </div>
 
             <div class="current">
-                В наличии:
+                В Наличии:
                 <div class="current-list">
                     <button class="currentNumb-button" value="true">Да</button>
                     <button class="currentNumb-button" value="false">Нет</button>
                 </div>
             </div>
 
+
             <div class="sort">
                 <button class="sort-button" onclick="Sort_Switch(this)">$</button>
             </div>
+
 
             <div class="company-select">
                 <div class="company-select-button-wrapper">
@@ -74,19 +82,29 @@
                     <button class="Relyon company-button" value="РЕЛИОН">РЕЛИОН</button>
                 </div>
             </div>
+
+
+
         </div>
 
-        <div class="main_panels">
-            <div class="panel" id="panel_1">
-                <button class="create-window" onclick="new_window(this)">+</button>
-            </div>
-        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/gridstack@9.2.2/dist/gridstack-all.min.js"></script>
+        <script src="script/gridstack_init.js"></script>
+        <button title="Добавить график" class="create-panel" onclick="new_panel()">+</button>
+        <div class="grid-stack"></div>
+
+
     </div>
+
+
+
+
 </main>
 
-<footer></footer>
+<footer>
 
-<!-- Скрипты -->
+</footer>
+
 <script src="/script/load_button.js"></script>
 <script src="/script/data.js"></script>
 <script src="/script/filters.js"></script>
@@ -96,6 +114,7 @@
 <script src="/script/multi_window/window_controller.js"></script>
 <script src="/script/multi_window/window_add.js"></script>
 <script src="/script/multi_window/window_edit.js"></script>
+
 <script src="/script/chart.js"></script>
 <script src="/script/catalog.js"></script>
 <script src="/script/sort_switch.js"></script>

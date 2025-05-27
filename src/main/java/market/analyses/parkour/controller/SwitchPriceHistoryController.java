@@ -1,16 +1,16 @@
 package market.analyses.parkour.controller;
 
+import market.analyses.parkour.dto.SwitchPriceDTO;
+import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.SwitchPriceHistory;
 import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import market.analyses.parkour.service.SwitchPriceHistoryService;
+import market.analyses.parkour.service.SwitchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/switch-price-history")
@@ -18,8 +18,11 @@ public class SwitchPriceHistoryController {
 
     private final SwitchPriceHistoryService historyService;
 
-    public SwitchPriceHistoryController(SwitchPriceHistoryService historyService) {
+    private final SwitchService switchService;
+
+    public SwitchPriceHistoryController(SwitchPriceHistoryService historyService, SwitchService switchService) {
         this.historyService = historyService;
+        this.switchService = switchService;
     }
 
     @GetMapping
@@ -72,5 +75,10 @@ public class SwitchPriceHistoryController {
         }
         historyService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/sortedBySwitch")
+    public ResponseEntity<List<SwitchPriceDTO>> getHistoryByAllSwitches() {
+        return ResponseEntity.ok(historyService.getHistoryBySwitch());
     }
 }

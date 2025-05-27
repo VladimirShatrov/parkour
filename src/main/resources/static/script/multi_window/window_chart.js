@@ -8,6 +8,7 @@ const companyColors = {
     "РЕЛИОН": "#1EB05B"
 };
 
+
 function createBarChartWindow(id_canvas, dataSwitches) {
     const canvas = document.querySelector(`[data-canvas="${id_canvas}"]`);
     if (!canvas) return;
@@ -98,3 +99,90 @@ function createBarChartWindow(id_canvas, dataSwitches) {
         plugins: [ChartDataLabels]
     });
 }
+
+function createPriceHistoryChart(id_canvas, switches_price_filtered) {
+    const canvas = document.querySelector(`[data-canvas="${id_canvas}"]`);
+    if (!canvas) return;
+
+    const context = canvas.getContext('2d');
+
+    if (charts[id_canvas]) {
+        charts[id_canvas].destroy();
+    }
+
+    const allDatesSet = new Set();
+    switches_price_filtered.forEach(sw => {
+        sw.price_history.forEach(p => allDatesSet.add(p.date));
+    });
+    const allDates = Array.from(allDatesSet).sort();
+
+    function getRandomColor() {
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 40 + Math.floor(Math.random() * 20);
+        const lightness = 40 + Math.floor(Math.random() * 10);  
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+
+    const datasets = switches_price_filtered.map(sw => {
+        const color = getRandomColor();
+
+        const priceMap = new Map(sw.price_history.map(p => [p.date, p.price]));
+        const data = allDates.map(date => priceMap.get(date) ?? null);
+
+        return {
+            label: sw.name,
+            data: data,
+            borderColor: color,
+            backgroundColor: color,
+            tension: 0.2,
+            spanGaps: true
+        };
+    });
+
+    charts[id_canvas] = new Chart(context, {
+        type: 'line',
+        data: {
+            labels: allDates,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const price = context.raw;
+                            return price ? `${context.dataset.label}: ${price.toLocaleString()}₽` : null;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    title: { display: true, text: 'Цена (₽)' },
+                    beginAtZero: false,
+                    ticks: {
+                        callback: value => value.toLocaleString()
+                    }
+                },
+                x: {
+                    title: { display: true, text: 'Дата изменения' },
+                    ticks: {
+                        callback: (val, idx) => {
+                            const label = allDates[val];
+                            return label?.length >= 10 ? label.slice(0, 10) : label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+

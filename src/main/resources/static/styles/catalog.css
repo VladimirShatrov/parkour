@@ -41,6 +41,7 @@
     margin: 0;
     padding-left: 1rem;
     width: 100%;
+    text-align: left;
 }
 
 .catalog-container-list.hidden {
@@ -152,6 +153,26 @@
 }
 
 .catalog-controller_save{
+    border: none;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    transition: 0.2s;
+    cursor: pointer;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.catalog-controller_price_dynamics{
+    border: none;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    transition: 0.2s;
+    cursor: pointer;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.catalog-controller_reboot{
     border: none;
     background-color: var(--main-color);
     color: var(--text-color);

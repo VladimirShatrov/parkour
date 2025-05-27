@@ -1,4 +1,5 @@
 let switches = []
+let switches_price = []
 fetch('http://sersh.keenetic.name:8088/switches')
   .then(res => res.json())
   .then(data => {
@@ -22,3 +23,21 @@ fetch('http://sersh.keenetic.name:8088/switches')
 
   })
   .catch(err => console.error('Ошибка при получении данных:', err));
+
+fetch('http://sersh.keenetic.name:8088/switch-price-history/sortedBySwitch')
+    .then(res => res.json())
+    .then(data => {
+        switches_price = data.map(s => ({
+            id: s.switchId,
+            name: s.switchName,
+            price_history: s.prices.map(p => ({
+                price: p.price,
+                date: p.date
+            }))
+        }));
+
+        console.log(switches_price);
+    })
+    .catch(err => console.error('Ошибка при получении истории цен:', err));
+
+

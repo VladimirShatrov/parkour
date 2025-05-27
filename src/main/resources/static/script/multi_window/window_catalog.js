@@ -179,6 +179,32 @@ function visualSwitchIds(window_id, selectedIds) {
     renderSwitchList(filteredSwitches, window_id);
 }
 
+function priceDynamicsSwitchIds(window_id, selectedIds) {
+    // Находим окно по ID, приводим к числу для правильного сравнения
+    const win = window_list.find(w => w.id === window_id);
+    if (!win) return;
+
+    const switch_list = getSwitchesById(switches, selectedIds);
+    const filteredSwitches = filterSwitches(switch_list, win.filters);
+    renderSwitchList(filteredSwitches, window_id);
+
+    const switches_price_filtered = getSwitchesPriceById(switches_price, selectedIds);
+    createPriceHistoryChart(window_id, switches_price_filtered);
+    
+}
+
+function rebootSwitchIds(windowId){
+    // Находим окно по ID
+    const windowObj = window_list.find(w => w.id === windowId);
+    if (!windowObj) return;
+
+    const all_ids = switches.map(sw => sw.id);
+    windowObj.switch_ids = all_ids;
+
+    // Обновляем отображение окна
+    update_window(windowId);
+}
+
 document.addEventListener("click", (e) => {
     // Удаление только выделенных
     if (e.target.classList.contains("catalog-controller_delete")) {
@@ -202,5 +228,18 @@ document.addEventListener("click", (e) => {
         const selectedIds = getSelectedSwitchIds(active_window);
         if (selectedIds.length === 0) return;
         visualSwitchIds(active_window, selectedIds);
+    }
+
+    // Динамика цен комутаторов
+    if (e.target.classList.contains("catalog-controller_price_dynamics")) {
+        const selectedIds = getSelectedSwitchIds(active_window);
+        if (selectedIds.length === 0) return;
+
+        priceDynamicsSwitchIds(active_window, selectedIds);
+    }
+
+    // Первоначальный список
+    if (e.target.classList.contains("catalog-controller_reboot")) {
+        rebootSwitchIds(active_window);
     }
 });

@@ -1,17 +1,26 @@
 package market.analyses.parkour.service;
 
+import market.analyses.parkour.dto.PriceDTO;
+import market.analyses.parkour.dto.SwitchPriceDTO;
+import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.SwitchPriceHistory;
 import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
+import market.analyses.parkour.repository.SwitchRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class SwitchPriceHistoryService {
     private final SwitchPriceHistoryRepository repository;
 
-    public SwitchPriceHistoryService(SwitchPriceHistoryRepository repository) {
+    private final SwitchRepository switchRepository;
+
+    public SwitchPriceHistoryService(SwitchPriceHistoryRepository repository, SwitchRepository switchRepository) {
         this.repository = repository;
+        this.switchRepository = switchRepository;
     }
 
     public List<SwitchPriceHistory> getAllPriceChanges() {
@@ -34,5 +43,27 @@ public class SwitchPriceHistoryService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public List<SwitchPriceDTO> getHistoryBySwitch() {
+        List<SwitchPriceHistory> histories = repository.findAllWithSwitchOrdered();
+
+        Map<Switch, List<SwitchPriceHistory>> grouped = histories.stream()
+                .collect(Collectors.groupingBy(SwitchPriceHistory::getSwitchEntity));
+
+        return grouped.entrySet().stream()
+                .map(entry -> {
+                    Switch s = entry.getKey();
+                    List<PriceDTO> prices = entry.getValue().stream()
+                            .map(h -> new PriceDTO(h.getNewPrice(), h.getChangeDate()))
+                            .toList();
+
+                    return new SwitchPriceDTO(
+                            s.getId().longValue(),
+                            s.getTitle(),
+                            prices
+                    );
+                }).toList();
+    }
+
 }
 
