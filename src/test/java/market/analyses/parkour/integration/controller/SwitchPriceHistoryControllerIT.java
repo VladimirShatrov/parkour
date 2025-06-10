@@ -271,4 +271,50 @@ public class SwitchPriceHistoryControllerIT {
                         status().isNotFound()
                 );
     }
+
+    @Test
+    public void getHistoryByAllSwitches_ReturnsValidResponseEntity() throws Exception {
+        this.mockMvc.perform(get("/switch-price-history/sortedBySwitch"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().json("""
+                            [
+                                {
+                                    "switchId": 1,
+                                    "switchName": "Catalyst 9200",
+                                    "prices": [
+                                        {
+                                            "price": 1100,
+                                            "date": "2025-04-01"
+                                        },
+                                        {
+                                            "price": 1150,
+                                            "date": "2025-04-15"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "switchId": 2,
+                                    "switchName": "TL-SG3428X",
+                                    "prices": [
+                                        {
+                                            "price": 390,
+                                            "date": "2025-03-20"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "switchId": 3,
+                                    "switchName": "CRS328-24P-4S+",
+                                    "prices": [
+                                        {
+                                            "price": 580,
+                                            "date": "2025-03-25"
+                                        }
+                                    ]
+                                }
+                            ]
+                        """)
+                );
+    }
 }

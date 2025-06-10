@@ -1,8 +1,11 @@
 package market.analyses.parkour.controller;
 
+import market.analyses.parkour.dto.SwitchDTO;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.service.CompanyService;
 import market.analyses.parkour.service.SwitchService;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -91,5 +94,17 @@ public class SwitchController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(switches);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<SwitchDTO>> getAllSwitchesDTO() {
+        var switches = switchService.getAllSwitchesDTO();
+        if (switches.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(switches);
     }
 }

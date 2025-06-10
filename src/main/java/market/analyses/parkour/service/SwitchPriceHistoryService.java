@@ -6,6 +6,7 @@ import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.SwitchPriceHistory;
 import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import market.analyses.parkour.repository.SwitchRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class SwitchPriceHistoryService {
         repository.deleteById(id);
     }
 
+    @Cacheable("switchPricesHistories")
     public List<SwitchPriceDTO> getHistoryBySwitch() {
         List<SwitchPriceHistory> histories = repository.findAllWithSwitchOrdered();
 

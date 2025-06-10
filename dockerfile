@@ -18,4 +18,14 @@ COPY --from=build /build/extracted/spring-boot-loader .
 COPY --from=build /build/extracted/snapshot-dependencies .
 COPY --from=build /build/extracted/application .
 
-ENTRYPOINT exec java ${JAVA_OPTS} org.springframework.boot.loader/launch.JarLauncher ${0} ${@}
+COPY otel/opentelemetry-javaagent.jar /otel/opentelemetry-javaagent.jar
+
+ENTRYPOINT exec java \
+  -javaagent:/otel/opentelemetry-javaagent.jar \
+  -Dotel.service.name=parkour \
+  -Dotel.traces.exporter=otlp \
+  -Dotel.metrics.exporter=none \
+  -Dotel.exporter.otlp.protocol=grpc \
+  -Dotel.exporter.otlp.endpoint=http://tempo:4317 \
+  ${JAVA_OPTS} \
+  org.springframework.boot.loader.launch.JarLauncher
