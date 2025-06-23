@@ -14,11 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class SwitchPriceHistoryControllerTest {
@@ -42,6 +45,7 @@ public class SwitchPriceHistoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(priceHistoryList, response.getBody());
+        verify(service, times(1)).getAllPriceChanges();
     }
 
     @Test
@@ -54,6 +58,7 @@ public class SwitchPriceHistoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(priceHistory, response.getBody());
+        verify(service, times(1)).getHistoryById(1L);
     }
 
     @Test
@@ -64,6 +69,7 @@ public class SwitchPriceHistoryControllerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(service, times(1)).getHistoryById(1L);
     }
 
     @Test
@@ -71,14 +77,20 @@ public class SwitchPriceHistoryControllerTest {
         SwitchPriceHistory newHistory = new SwitchPriceHistory(null, new Switch(), 100, LocalDate.parse("2025-05-10"));
         SwitchPriceHistory createdHistory = new SwitchPriceHistory(1, new Switch(), 100, LocalDate.parse("2025-05-10"));
 
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(URI.create("http://localhost"));
         Mockito.when(service.savePriceChange(Mockito.any(SwitchPriceHistory.class))).thenReturn(createdHistory);
 
         ResponseEntity<?> response = controller.createHistory(newHistory, uriBuilder);
+        URI location = response.getHeaders().getLocation();
 
         assertNotNull(response);
+        assertNotNull(location);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("http://localhost/switch-price-history/1", location.toString());
         assertEquals(createdHistory, response.getBody());
+
+        verify(service, times(0)).existsById(1L);
+        verify(service, times(1)).savePriceChange(newHistory);
     }
 
     @Test
@@ -92,6 +104,9 @@ public class SwitchPriceHistoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Запись об изменении цены с id: 1 уже существует", response.getBody());
+
+        verify(service, times(1)).existsById(1L);
+        verify(service, times(0)).savePriceChange(newHistory);
     }
 
     @Test
@@ -107,6 +122,9 @@ public class SwitchPriceHistoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedHistory, response.getBody());
+
+        verify(service, times(1)).getHistoryById(1L);
+        verify(service, times(1)).savePriceChange(Mockito.any(SwitchPriceHistory.class));
     }
 
     @Test
@@ -119,6 +137,9 @@ public class SwitchPriceHistoryControllerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        verify(service, times(1)).getHistoryById(1L);
+        verify(service, times(0)).savePriceChange(Mockito.any(SwitchPriceHistory.class));
     }
 
     @Test
@@ -129,6 +150,9 @@ public class SwitchPriceHistoryControllerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        verify(service, times(1)).delete(1L);
+        verify(service, times(1)).existsById(1L);
     }
 
     @Test
@@ -139,5 +163,8 @@ public class SwitchPriceHistoryControllerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        verify(service, times(0)).delete(1L);
+        verify(service, times(1)).existsById(1L);
     }
 }

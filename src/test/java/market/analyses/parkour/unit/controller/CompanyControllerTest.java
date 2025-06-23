@@ -12,9 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyControllerTest {
@@ -39,6 +42,7 @@ public class CompanyControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(companies, response.getBody());
+        verify(companyService, times(1)).getAllCompanies();
     }
 
     @Test
@@ -52,6 +56,7 @@ public class CompanyControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(company, response.getBody());
+        verify(companyService, times(1)).getCompanyById(1L);
     }
 
     @Test
@@ -61,6 +66,7 @@ public class CompanyControllerTest {
         var response = companyController.getCompanyById(999L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(companyService, times(1)).getCompanyById(999L);
     }
 
     @Test
@@ -69,12 +75,18 @@ public class CompanyControllerTest {
 
         Mockito.doReturn(company).when(companyService).saveCompany(company);
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(URI.create("http://localhost"));
 
         var response = companyController.createCompany(company, uriComponentsBuilder);
+        URI location = response.getHeaders().getLocation();
 
         assertNotNull(response);
+        assertNotNull(location);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("http://localhost/companies/1", location.toString());
+        assertEquals(response.getBody(), company);
+        verify(companyService, times(1)).saveCompany(company);
+        verify(companyService, times(1)).existsById(1L);
     }
 
     @Test
@@ -90,6 +102,8 @@ public class CompanyControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedCompany, response.getBody());
+        verify(companyService, times(1)).getCompanyById(1L);
+        verify(companyService, times(1)).saveCompany(company);
     }
 
     @Test
@@ -101,6 +115,8 @@ public class CompanyControllerTest {
         var response = companyController.updateCompany(999L, updatedCompany);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(companyService, times(1)).getCompanyById(999L);
+        verify(companyService, times(0)).saveCompany(Mockito.any(Company.class));
     }
 
     @Test
@@ -110,6 +126,7 @@ public class CompanyControllerTest {
         var response = companyController.deleteCompany(1L);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(companyService, times(1)).deleteCompany(1L);
     }
 
     @Test
@@ -119,5 +136,7 @@ public class CompanyControllerTest {
         var response = companyController.deleteCompany(999L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(companyService, times(1)).existsById(999L);
+        verify(companyService, times(0)).deleteCompany(Mockito.any(Long.class));
     }
 }

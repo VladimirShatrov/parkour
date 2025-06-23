@@ -65,13 +65,12 @@ public class SwitchController {
         s.setCompany(switchDetails.getCompany());
         s.setPrice(switchDetails.getPrice());
         s.setPoePorts(switchDetails.getPoePorts());
-        s.setTitle(switchDetails.getTitle());
+        s.setName(switchDetails.getName());
         s.setUps(switchDetails.getUps());
         s.setSfpPorts(switchDetails.getSfpPorts());
         s.setAvailable(switchDetails.getAvailable());
 
-        switchService.saveSwitch(s);
-        return ResponseEntity.ok(s);
+        return ResponseEntity.ok(switchService.saveSwitch(s));
     }
 
     @DeleteMapping("/{id}")

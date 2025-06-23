@@ -54,7 +54,7 @@ services:
       - "15672:15672"
 
   frontend:
-    build: /frontend
+    image: dyadyanadya/parkour-frontend
     container_name: frontend-app
     ports:
       - "8085:80"

@@ -14,9 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 
 @ExtendWith(MockitoExtension.class)
 public class SwitchControllerTest {
@@ -44,6 +48,7 @@ public class SwitchControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(switches, response.getBody());
+        verify(switchService, times(1)).getAllSwitches();
     }
 
     @Test
@@ -52,12 +57,18 @@ public class SwitchControllerTest {
 
         Mockito.doReturn(switchEntity).when(switchService).saveSwitch(switchEntity);
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(URI.create("http://localhost"));
 
         var response = switchController.createSwitch(switchEntity, uriComponentsBuilder);
+        URI location = response.getHeaders().getLocation();
 
         assertNotNull(response);
+        assertNotNull(location);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("http://localhost/switches/1", location.toString());
+        assertEquals(switchEntity, response.getBody());
+        verify(switchService, times(1)).existsById(1L);
+        verify(switchService, times(1)).saveSwitch(switchEntity);
     }
 
     @Test
@@ -71,6 +82,7 @@ public class SwitchControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(switchEntity, response.getBody());
+        verify(switchService, times(1)).getSwitchById(1L);
     }
 
     @Test
@@ -80,6 +92,7 @@ public class SwitchControllerTest {
         var response = switchController.getSwitchById(999L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(switchService, times(1)).getSwitchById(999L);
     }
 
     @Test
@@ -95,16 +108,12 @@ public class SwitchControllerTest {
 
         Switch capturedSwitch = response.getBody();
         assertNotNull(capturedSwitch);
-        assertEquals(updatedSwitch.getId(), capturedSwitch.getId());
-        assertEquals(updatedSwitch.getTitle(), capturedSwitch.getTitle());
-        assertEquals(updatedSwitch.getPrice(), capturedSwitch.getPrice());
-        assertEquals(updatedSwitch.getPoePorts(), capturedSwitch.getPoePorts());
-        assertEquals(updatedSwitch.getSfpPorts(), capturedSwitch.getSfpPorts());
-        assertEquals(updatedSwitch.getUps(), capturedSwitch.getUps());
-        assertEquals(updatedSwitch.getControllable(), capturedSwitch.getControllable());
-        assertEquals(updatedSwitch.getAvailable(), capturedSwitch.getAvailable());
+        assertEquals(updatedSwitch, capturedSwitch);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        verify(switchService, times(1)).getSwitchById(1L);
+        verify(switchService, times(1)).saveSwitch(switchEntity);
     }
 
     @Test
@@ -115,7 +124,10 @@ public class SwitchControllerTest {
 
         var response = switchController.updateSwitch(999L, updatedSwitch);
 
+        assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(switchService, times(1)).getSwitchById(999L);
+        verify(switchService, times(0)).saveSwitch(Mockito.any(Switch.class));
     }
 
     @Test
@@ -124,7 +136,10 @@ public class SwitchControllerTest {
 
         var response = switchController.deleteSwitch(1L);
 
+        assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(switchService, times(1)).existsById(1L);
+        verify(switchService, times(1)).deleteSwitch(1L);
     }
 
     @Test
@@ -133,7 +148,9 @@ public class SwitchControllerTest {
 
         var response = switchController.deleteSwitch(999L);
 
+        assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(switchService, times(1)).existsById(999L);
     }
 
     @Test
@@ -151,6 +168,8 @@ public class SwitchControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(switches, response.getBody());
+        verify(companyService, times(1)).existsById(1L);
+        verify(switchService, times(1)).getSwitchesByCompany(1L);
     }
 
     @Test
@@ -159,6 +178,8 @@ public class SwitchControllerTest {
 
         var response = switchController.getSwitchesByCompanyId(999L);
 
+        assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verify(companyService, times(1)).existsById(999L);
     }
 }

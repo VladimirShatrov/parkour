@@ -23,7 +23,7 @@ public class Switch {
     private Company company;
 
     @Column(name = "title", nullable = false, length = 100)
-    private String title;
+    private String name;
 
     @Column(name = "price", nullable = false)
     private Integer price;

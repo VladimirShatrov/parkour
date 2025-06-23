@@ -61,11 +61,10 @@ public class SwitchPriceHistoryService {
 
                     return new SwitchPriceDTO(
                             s.getId().longValue(),
-                            s.getTitle(),
+                            s.getName(),
                             prices
                     );
                 }).toList();
     }
-
 }
 

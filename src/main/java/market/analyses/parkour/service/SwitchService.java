@@ -63,12 +63,10 @@ public class SwitchService {
                     s.getId(),
                     s.getCompany().getNameCompany(),
                     s.getPrice(),
-                    s.getTitle(),
+                    s.getName(),
                     attributes
             ));
         }
-
         return result;
     }
-
 }

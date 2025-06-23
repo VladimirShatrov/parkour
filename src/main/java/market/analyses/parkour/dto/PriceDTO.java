@@ -29,4 +29,23 @@ public class PriceDTO {
     public void setDate(LocalDate date) {
         this.date = date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PriceDTO)) return false;
+
+        PriceDTO priceDTO = (PriceDTO) o;
+
+        if (!price.equals(priceDTO.price)) return false;
+        return date.equals(priceDTO.date);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = price != null ? price.hashCode() : 0;
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        return result;
+    }
+
 }
