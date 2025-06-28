@@ -76,9 +76,6 @@ services:
     environment:
       - JAVA_OPTS=
       - LOKI=http://loki:3100
-      - DATASOURCE_URL=jdbc:postgresql://sersh.keenetic.name:5432/parkour
-      - DATASOURCE_USERNAME=Parkour
-      - DATASOURCE_PASSWORD=Parkour
     depends_on:
       - tempo
       - victoria-metrics
