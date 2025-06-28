@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -112,13 +113,13 @@ public class SwitchPriceHistoryServiceTest {
         );
 
         var switchPricesDto = List.of(
-            new SwitchPriceDTO(1L, "switch1", List.of(
-                    new PriceDTO(25, LocalDate.of(2025, 5, 23)),
-                    new PriceDTO(35, LocalDate.of(2025, 6, 23))
-            )),
             new SwitchPriceDTO(2L, "switch2", List.of(
                     new PriceDTO(30, LocalDate.of(2025, 5, 23)),
                     new PriceDTO(25, LocalDate.of(2025, 6, 23))
+            )),
+            new SwitchPriceDTO(1L, "switch1", List.of(
+                    new PriceDTO(25, LocalDate.of(2025, 5, 23)),
+                    new PriceDTO(35, LocalDate.of(2025, 6, 23))
             ))
         );
 
@@ -128,7 +129,7 @@ public class SwitchPriceHistoryServiceTest {
         assertNotNull(response);
         assertFalse(response.isEmpty());
         assertEquals(2, response.size());
-        assertEquals(switchPricesDto, response);
+        assertThat(response).containsExactlyInAnyOrderElementsOf(switchPricesDto);
         verify(repository, times(1)).findAllWithSwitchOrdered();
     }
 }

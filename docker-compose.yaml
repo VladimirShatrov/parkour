@@ -54,11 +54,15 @@ services:
       - "15672:15672"
 
   frontend:
-    image: dyadyanadya/parkour-frontend
+    image: dyadyanadya/parkour-frontend:v3_4
     container_name: frontend-app
     ports:
       - "8085:80"
     restart: unless-stopped
+
+  parser:
+    image: emfermenty1/testparser:v6
+    container_name: parser
 
   app:
     build:
@@ -72,6 +76,9 @@ services:
     environment:
       - JAVA_OPTS=
       - LOKI=http://loki:3100
+      - DATASOURCE_URL=jdbc:postgresql://sersh.keenetic.name:5432/parkour
+      - DATASOURCE_USERNAME=Parkour
+      - DATASOURCE_PASSWORD=Parkour
     depends_on:
       - tempo
       - victoria-metrics

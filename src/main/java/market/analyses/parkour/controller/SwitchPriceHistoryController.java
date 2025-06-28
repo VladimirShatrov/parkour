@@ -1,12 +1,8 @@
 package market.analyses.parkour.controller;
 
 import market.analyses.parkour.dto.SwitchPriceDTO;
-import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.SwitchPriceHistory;
-import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
 import market.analyses.parkour.service.SwitchPriceHistoryService;
-import market.analyses.parkour.service.SwitchService;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,11 +15,8 @@ public class SwitchPriceHistoryController {
 
     private final SwitchPriceHistoryService historyService;
 
-    private final SwitchService switchService;
-
-    public SwitchPriceHistoryController(SwitchPriceHistoryService historyService, SwitchService switchService) {
+    public SwitchPriceHistoryController(SwitchPriceHistoryService historyService) {
         this.historyService = historyService;
-        this.switchService = switchService;
     }
 
     @GetMapping

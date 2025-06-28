@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface SwitchPriceHistoryRepository extends JpaRepository<SwitchPriceHistory, Long> {
 
-    List<SwitchPriceHistory> getSwitchPriceHistoriesBySwitchEntityOrderByChangeDateAsc(Switch s);
-
     @Query("""
     SELECT h 
     FROM SwitchPriceHistory h

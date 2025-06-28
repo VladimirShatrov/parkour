@@ -5,7 +5,7 @@ import market.analyses.parkour.dto.SwitchPriceDTO;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.entity.SwitchPriceHistory;
 import market.analyses.parkour.repository.SwitchPriceHistoryRepository;
-import market.analyses.parkour.repository.SwitchRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,17 +17,15 @@ import java.util.stream.Collectors;
 public class SwitchPriceHistoryService {
     private final SwitchPriceHistoryRepository repository;
 
-    private final SwitchRepository switchRepository;
-
-    public SwitchPriceHistoryService(SwitchPriceHistoryRepository repository, SwitchRepository switchRepository) {
+    public SwitchPriceHistoryService(SwitchPriceHistoryRepository repository) {
         this.repository = repository;
-        this.switchRepository = switchRepository;
     }
 
     public List<SwitchPriceHistory> getAllPriceChanges() {
         return repository.findAll();
     }
 
+    @CacheEvict(value = {"switchPricesHistories"}, allEntries = true)
     public SwitchPriceHistory savePriceChange(SwitchPriceHistory history) {
         return repository.save(history);
     }
@@ -41,6 +39,7 @@ public class SwitchPriceHistoryService {
         return repository.existsById(id);
     }
 
+    @CacheEvict(value = {"switchPricesHistories"}, allEntries = true)
     public void delete(Long id) {
         repository.deleteById(id);
     }
@@ -61,7 +60,7 @@ public class SwitchPriceHistoryService {
 
                     return new SwitchPriceDTO(
                             s.getId().longValue(),
-                            s.getName(),
+                            s.getTitle(),
                             prices
                     );
                 }).toList();

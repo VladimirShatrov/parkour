@@ -4,7 +4,6 @@ import market.analyses.parkour.dto.SwitchDTO;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.service.CompanyService;
 import market.analyses.parkour.service.SwitchService;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,7 @@ public class SwitchController {
         s.setCompany(switchDetails.getCompany());
         s.setPrice(switchDetails.getPrice());
         s.setPoePorts(switchDetails.getPoePorts());
-        s.setName(switchDetails.getName());
+        s.setTitle(switchDetails.getTitle());
         s.setUps(switchDetails.getUps());
         s.setSfpPorts(switchDetails.getSfpPorts());
         s.setAvailable(switchDetails.getAvailable());

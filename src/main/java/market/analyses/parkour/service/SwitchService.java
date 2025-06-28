@@ -4,6 +4,7 @@ import market.analyses.parkour.dto.SwitchAttribute;
 import market.analyses.parkour.dto.SwitchDTO;
 import market.analyses.parkour.entity.Switch;
 import market.analyses.parkour.repository.SwitchRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,13 @@ public class SwitchService {
     }
 
     @Transactional
+    @CacheEvict(value = {"switches", "switchesData"}, allEntries = true)
     public Switch saveSwitch(Switch networkSwitch) {
         return switchRepository.save(networkSwitch);
     }
 
     @Transactional
+    @CacheEvict(value = {"switches", "switchesData"}, allEntries = true)
     public void deleteSwitch(Long id) {
         switchRepository.deleteById(id);
     }
@@ -46,6 +49,7 @@ public class SwitchService {
         return switchRepository.findByCompanyId(id);
     }
 
+    @Cacheable("switchesData")
     public List<SwitchDTO> getAllSwitchesDTO() {
         var switches = switchRepository.findAll();
 
@@ -63,7 +67,7 @@ public class SwitchService {
                     s.getId(),
                     s.getCompany().getNameCompany(),
                     s.getPrice(),
-                    s.getName(),
+                    s.getTitle(),
                     attributes
             ));
         }

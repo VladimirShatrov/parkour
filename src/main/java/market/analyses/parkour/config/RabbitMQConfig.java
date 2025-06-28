@@ -6,10 +6,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String QUEUE_NAME = "parser.run";
+    public static final String RUN_QUEUE = "parser.run";
+    public static final String RESULT_QUEUE = "parser.result";
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+    public Queue runQueue() {
+        return new Queue(RUN_QUEUE, false);
+    }
+
+    @Bean
+    public Queue resultQueue() {
+        return new Queue(RESULT_QUEUE, false);
     }
 }

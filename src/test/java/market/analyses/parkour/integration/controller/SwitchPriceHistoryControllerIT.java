@@ -280,8 +280,8 @@ public class SwitchPriceHistoryControllerIT {
                         content().json("""
                             [
                                 {
-                                    "switchId": 1,
-                                    "switchName": "Catalyst 9200",
+                                    "id": 1,
+                                    "name": "Catalyst 9200",
                                     "prices": [
                                         {
                                             "price": 1100,
@@ -294,8 +294,8 @@ public class SwitchPriceHistoryControllerIT {
                                     ]
                                 },
                                 {
-                                    "switchId": 2,
-                                    "switchName": "TL-SG3428X",
+                                    "id": 2,
+                                    "name": "TL-SG3428X",
                                     "prices": [
                                         {
                                             "price": 390,
@@ -304,8 +304,8 @@ public class SwitchPriceHistoryControllerIT {
                                     ]
                                 },
                                 {
-                                    "switchId": 3,
-                                    "switchName": "CRS328-24P-4S+",
+                                    "id": 3,
+                                    "name": "CRS328-24P-4S+",
                                     "prices": [
                                         {
                                             "price": 580,
